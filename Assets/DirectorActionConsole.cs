@@ -1,15 +1,19 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
-public class DirectorActionConsole : MonoBehaviour {
+[RequireComponent(typeof(Text))]
+public class DirectorActionConsole : Manager<DirectorActionConsole>
+{
+    private Text _output;
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    void Awake()
+    {
+        _output = GetComponent<Text>();
+    }
+
+    public void WriteActionToConsole(string action)
+    {
+        _output.text = _output.text + '\n' + "- " + action;
+    }
 }
