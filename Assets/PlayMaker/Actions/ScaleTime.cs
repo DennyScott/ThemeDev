@@ -42,10 +42,10 @@ namespace HutongGames.PlayMaker.Actions
 		
 		void DoTimeScale()
 		{
-			Time.timeScale = timeScale.Value;
-			
-			//TODO: how to get the user set default value?
-			Time.fixedDeltaTime = 0.02f * Time.timeScale;
+            Time.timeScale = timeScale.Value;
+
+            //TODO: how to get the user set default value?
+            Time.fixedDeltaTime = 0.02f * Time.timeScale;
 		}
 	}
 }

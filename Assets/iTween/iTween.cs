@@ -6183,7 +6183,7 @@ public class iTween : MonoBehaviour{
 		Component[] tweens = target.GetComponents(typeof(iTween));
 		foreach (iTween item in tweens){
 			if(item.delay>0){
-				item.delay-=Time.time-item.delayStarted;
+				item.delay-= Time.time-item.delayStarted;
 				item.StopCoroutine("TweenDelay");
 			}
 			item.isPaused=true;
@@ -6216,7 +6216,7 @@ public class iTween : MonoBehaviour{
 			targetType=targetType.Substring(0,type.Length);
 			if(targetType.ToLower() == type.ToLower()){
 				if(item.delay>0){
-					item.delay-=Time.time-item.delayStarted;
+					item.delay-= Time.time-item.delayStarted;
 					item.StopCoroutine("TweenDelay");
 				}
 				item.isPaused=true;
@@ -6238,7 +6238,7 @@ public class iTween : MonoBehaviour{
 			targetType=targetType.Substring(0,type.Length);
 			if(targetType.ToLower() == type.ToLower()){
 				if(item.delay>0){
-					item.delay-=Time.time-item.delayStarted;
+					item.delay-= Time.time-item.delayStarted;
 					item.StopCoroutine("TweenDelay");
 				}
 				item.isPaused=true;
