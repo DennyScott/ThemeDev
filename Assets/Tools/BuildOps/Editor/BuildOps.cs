@@ -7,7 +7,7 @@ public class BuildOps
     static string[] SCENES = FindEnabledEditorScenes();
 
     static string APP_NAME = "ThemeDev";
-        static string TARGET_DIR = "/unity/";
+        static string TARGET_DIR = "/unity";
 
     static void PerformBuild()
     {
@@ -20,7 +20,7 @@ public class BuildOps
 
     public static void PerformWindowsBuild()
     {
-        string target_dir = APP_NAME + ".app";
+        string target_dir = APP_NAME + ".exe";
         GenericBuild(SCENES, TARGET_DIR + "/" + target_dir, BuildTarget.StandaloneWindows64, BuildOptions.None);
     }
 
