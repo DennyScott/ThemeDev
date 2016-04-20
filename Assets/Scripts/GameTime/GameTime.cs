@@ -37,6 +37,7 @@ namespace GameTime
         private void Start()
         {
             StartCoroutine("Run");
+            AddEvent(new Income(3));
         }
 
         private void RenderUnit()

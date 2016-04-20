@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using InGameConsole;
 using UnityEngine;
 
 namespace GameTime
@@ -17,7 +18,7 @@ namespace GameTime
 
         public override void TriggerEvent()
         {
-            Debug.Log("Make some money!");
+            DirectorActionConsole.Instance.WriteActionToConsole("Income", "Make it Rain!");
         }
     }
 }
