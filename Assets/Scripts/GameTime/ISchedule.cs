@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using JetBrains.Annotations;
-
-namespace GameTime
+﻿namespace GameTime
 {
+    /// <summary>
+    /// Interface for schedule.
+    /// </summary>
     public interface ISchedule
     {
-        bool HasUnit(int unit);
+        bool IsScheduledDate(int unit);
         bool IsFlushDate(int unit);
     }
 }
