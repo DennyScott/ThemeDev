@@ -1,12 +1,12 @@
-﻿using UnityEngine;
-using System.Collections;
-
-namespace GameTime
+﻿namespace GameTime
 {
+    /// <summary>
+    /// Interface for the events.
+    /// </summary>
     public interface IEvent
     {
         void TriggerEvent();
-        bool IsScheduled(int unit);
-        bool IsFlushedUnit(int unit);
+        bool IsScheduledDate(int unit);
+        bool IsFlushedDate(int unit);
     }
 }
