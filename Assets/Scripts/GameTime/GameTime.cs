@@ -75,7 +75,6 @@ namespace GameTime
 
         #endregion
 
-
         #region Private Methods
 
         /// <summary>
