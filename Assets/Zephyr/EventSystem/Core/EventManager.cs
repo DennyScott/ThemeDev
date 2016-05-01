@@ -1,4 +1,4 @@
-using Zephyr.EventSystem.Util;
+﻿using Zephyr.EventSystem.Util;
 
 namespace Zephyr.EventSystem.Core
 {
