@@ -10,7 +10,6 @@ namespace BuildOps.SceneCompiler
     [MenuItem("Tools/Build Scene")]
     private static void Run()
     {
-      XMLDocument doc = new XMLDocument();
       Debug.Log(EditorSceneManager.sceneCount);
       var scenes = EditorSceneManager.GetAllScenes();
 
