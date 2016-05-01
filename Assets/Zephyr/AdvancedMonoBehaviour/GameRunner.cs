@@ -35,7 +35,9 @@ namespace Zephyr.MonoBehaviours
                 _updateableObjects.Remove(obj);
         }
 
-        // Update is called once per frame
+        /// <summary>
+        /// Updates once a frame.
+        /// </summary>
         private void Update()
         {
             var delta = Time.deltaTime;
