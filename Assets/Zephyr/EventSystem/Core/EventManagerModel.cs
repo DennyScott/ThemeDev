@@ -6,7 +6,6 @@ namespace Zephyr.EventSystem.Core
 {
   public class EventManagerModel
   {
-
     public bool LimitQueueProcesing = false;
     public float QueueProcessTime = 0.0f;
 
@@ -25,143 +24,163 @@ namespace Zephyr.EventSystem.Core
       new Dictionary<System.Delegate, System.Delegate>();
 
     private EventDelegate AddDelegate<T>(EventDelegate<T> del) where T : GameEvent
+    {
+      // Early out if we've already registered this delegate
+      if (_delegateLookup.ContainsKey(del))
+        return null;
+
+      //Create a new non-generic delegate which calls our generic one.
+      // This is the delegate we actually invoke
+      EventDelegate internalDelegate = (e) => del((T) e);
+      _delegateLookup[del] = internalDelegate;
+
+      EventDelegate tempDel;
+      if (_delegates.TryGetValue(typeof(T), out tempDel))
+      {
+        _delegates[typeof(T)] = tempDel += internalDelegate;
+      }
+      else
+      {
+        _delegates[typeof(T)] = internalDelegate;
+      }
+
+      return internalDelegate;
+    }
+
+    public void AddListener<T>(EventDelegate<T> del) where T : GameEvent
+    {
+      AddDelegate<T>(del);
+    }
+
+    public void AddListenerOnce<T>(EventDelegate<T> del) where T : GameEvent
+    {
+      var result = AddDelegate<T>(del);
+
+      if (result != null)
+      {
+        _onceLookups[result] = del;
+      }
+    }
+
+    public void RemoveListener<T>(EventDelegate<T> del) where T : GameEvent
+    {
+      EventDelegate internalDelegate;
+      if (_delegateLookup.TryGetValue(del, out internalDelegate))
+      {
+        if (_onceLookups.ContainsKey(internalDelegate))
+          _onceLookups.Remove(internalDelegate);
+
+        EventDelegate tempDel;
+        if (_delegates.TryGetValue(typeof(T), out tempDel))
         {
-          // Early out if we've already registered this delegate
-          if (_delegateLookup.ContainsKey(del))
-            return null;
-
-          //Create a new non-generic delegate which calls our generic one.
-          // This is the delegate we actually invoke
-          EventDelegate internalDelegate = (e) => del((T) e);
-          _delegateLookup[del] = internalDelegate;
-
-          EventDelegate tempDel;
-          if (_delegates.TryGetValue(typeof(T), out tempDel))
+          tempDel -= internalDelegate;
+          if (tempDel == null)
           {
-            _delegates[typeof(T)] = tempDel += internalDelegate;
+            _delegates.Remove(typeof(T));
           }
           else
           {
-            _delegates[typeof(T)] = internalDelegate;
+            _delegates[typeof(T)] = tempDel;
           }
-
-          return internalDelegate;
         }
 
-        public void AddListener<T>(EventDelegate<T> del) where T : GameEvent
-        {
-          AddDelegate<T>(del);
-        }
+        _delegateLookup.Remove(del);
+      }
+    }
 
-        public void AddListenerOnce<T>(EventDelegate<T> del) where T : GameEvent
-        {
-          var result = AddDelegate<T>(del);
+    public void RemoveAll()
+    {
+      _delegates.Clear();
+      _delegateLookup.Clear();
+      _onceLookups.Clear();
+    }
 
-          if (result != null)
+    public bool IsDelegatesEmpty()
+    {
+      return _delegates.Count == 0 && _delegateLookup.Count == 0 && _onceLookups.Count == 0;
+    }
+
+    public bool HasListener<T>(EventDelegate<T> del) where T : GameEvent
+    {
+      return _delegateLookup.ContainsKey(del);
+    }
+
+    public void TriggerEvent(GameEvent e)
+    {
+      EventDelegate del;
+      if (_delegates.TryGetValue(e.GetType(), out del))
+      {
+        del.Invoke(e);
+
+        //remove listeners which should only be called once
+        foreach (EventDelegate k in _delegates[e.GetType()].GetInvocationList())
+        {
+          if (!_onceLookups.ContainsKey(k)) continue;
+
+          _delegates[e.GetType()] -= k;
+
+          if (_delegates[e.GetType()] != null)
           {
-            _onceLookups[result] = del;
-          }
-        }
-
-        public void RemoveListener<T>(EventDelegate<T> del) where T : GameEvent
-        {
-          EventDelegate internalDelegate;
-          if (_delegateLookup.TryGetValue(del, out internalDelegate))
-          {
-            EventDelegate tempDel;
-            if (_delegates.TryGetValue(typeof(T), out tempDel))
-            {
-              tempDel -= internalDelegate;
-              if (tempDel == null)
-              {
-                _delegates.Remove(typeof(T));
-              }
-              else
-              {
-                _delegates[typeof(T)] = tempDel;
-              }
-            }
-          }
-        }
-
-        public void RemoveAll()
-        {
-          _delegates.Clear();
-          _delegateLookup.Clear();
-          _onceLookups.Clear();
-        }
-
-        public bool HasListener<T>(EventDelegate<T> del) where T : GameEvent
-        {
-          return _delegateLookup.ContainsKey(del);
-        }
-
-        public void TriggerEvent(GameEvent e)
-        {
-          EventDelegate del;
-          if (_delegates.TryGetValue(e.GetType(), out del))
-          {
-            del.Invoke(e);
-
-            //remove listeners which should only be called once
-            foreach (EventDelegate k in _delegates[e.GetType()].GetInvocationList())
-            {
-              if (!_onceLookups.ContainsKey(k)) continue;
-
-              _delegates[e.GetType()] -= k;
-
-              if (_delegates[e.GetType()] != null)
-              {
-                _delegates.Remove(e.GetType());
-              }
-
-              _delegateLookup.Remove(_onceLookups[k]);
-              _onceLookups.Remove(k);
-            }
-          }
-          else
-          {
-            Debug.LogWarning("Event: " + e.GetType() + " has no listeners");
-          }
-        }
-
-        //Inserts the event in the current queue
-        public bool QueueEvent(GameEvent evt)
-        {
-          if (!_delegates.ContainsKey(evt.GetType()))
-          {
-            Debug.LogWarning("EventManager: QueueEvent failed due to no listeners for event: " + evt.GetType());
-            return false;
+            _delegates.Remove(e.GetType());
           }
 
-          _eventQueue.Enqueue(evt);
-          return true;
+          _delegateLookup.Remove(_onceLookups[k]);
+          _onceLookups.Remove(k);
         }
+      }
+      else
+      {
+        Debug.LogWarning("Event: " + e.GetType() + " has no listeners");
+      }
+    }
 
-        //Every update cycle the queue is processed, if the queue processing is limited, a maxiumum proccesing time per
-        //update can be set after which the events will have to be processed next update loop.
-        public void OnUpdate()
+    //Inserts the event in the current queue
+    public bool QueueEvent(GameEvent evt)
+    {
+      if (!_delegates.ContainsKey(evt.GetType()))
+      {
+        Debug.LogWarning("EventManager: QueueEvent failed due to no listeners for event: " + evt.GetType());
+        return false;
+      }
+
+      _eventQueue.Enqueue(evt);
+      return true;
+    }
+
+    public int QueueSize()
+    {
+      return _eventQueue.Count;
+    }
+
+    public bool IsQueueEmpty()
+    {
+      return QueueSize() == 0;
+    }
+
+    //Every update cycle the queue is processed, if the queue processing is limited, a maxiumum proccesing time per
+    //update can be set after which the events will have to be processed next update loop.
+    public void OnUpdate()
+    {
+      var timer = 0.0f;
+      while (_eventQueue.Count > 0)
+      {
+        if (LimitQueueProcesing)
         {
-          var timer = 0.0f;
-          while(_eventQueue.Count > 0)
-          {
-            if (LimitQueueProcesing)
-            {
-              if (timer > QueueProcessTime) return;
-            }
-
-            var evt = _eventQueue.Dequeue() as GameEvent;
-            TriggerEvent(evt);
-
-            if (LimitQueueProcesing)
-              timer += Time.deltaTime;
-          }
+          if (timer > QueueProcessTime) return;
         }
 
-        public void OnApplicationQuit()
-        {
-          RemoveAll();
-          _eventQueue.Clear();
-        }
+        var evt = _eventQueue.Dequeue() as GameEvent;
+        TriggerEvent(evt);
+
+        if (LimitQueueProcesing)
+          timer += Time.deltaTime;
+      }
+    }
+
+    public void OnApplicationQuit()
+    {
+      RemoveAll();
+      _eventQueue.Clear();
+    }
   }
 }
