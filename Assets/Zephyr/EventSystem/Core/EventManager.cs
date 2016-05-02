@@ -1,8 +1,8 @@
-﻿using Zephyr.EventSystem.Util;
+﻿using Zephyr.MonoBehaviours;
 
 namespace Zephyr.EventSystem.Core
 {
-  public class EventManager : SingletonAsComponent<EventManager>
+  public class EventManager : AdvancedMonoBehaviour
   {
     public bool LimitQueueProcesing = false;
     public float QueueProcessTime = 0.0f;
