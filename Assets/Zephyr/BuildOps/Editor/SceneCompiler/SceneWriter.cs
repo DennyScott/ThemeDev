@@ -14,6 +14,13 @@ namespace Zephyr.BuildOps.SceneCompiler
     /// </summary>
     public class SceneWriter
     {
+        public string Path { get; private set; }
+
+        public SceneWriter(string path)
+        {
+            Path = path;
+        }
+
         /// <summary>
         /// Collect All scenes in the Build Settings and Place into XML format to read.
         /// </summary>
@@ -42,23 +49,29 @@ namespace Zephyr.BuildOps.SceneCompiler
         }
 
         /// <summary>
+        /// Collect Current scene nested scenes, and place into xml format.
+        /// </summary>
+        /// <param name="path">Path of xml file to save</param>
+        public void Write(string path)
+        {
+            Path = path;
+            Write();
+        }
+
+        /// <summary>
         /// Collect Current Scene Nested Scenes, and place into xml format.
         /// </summary>
-        public void RunCurrentScene()
+        public void Write()
         {
             try
             {
-                //Create necessary folders and get file names
-                var path = GetPathForXml();
-                WriteResourceDevOpsFolder();
-
                 // Collect Scenes for XML
                 var sceneContainers = CompileCurrentScene();
 
                 //Write xml
-                WriteXmlScene(sceneContainers, path);
+                WriteXmlScene(sceneContainers, Path);
 
-                CompileBuildSettings(path);
+                CompileBuildSettings(Path);
             }
             catch (Exception e)
             {
@@ -223,7 +236,7 @@ namespace Zephyr.BuildOps.SceneCompiler
         /// Write ResourceDevOps folder ("/Resources/BuildOps") if it
         /// doesn't exist already
         /// </summary>
-        private static void WriteResourceDevOpsFolder()
+        public static void WriteResourceDevOpsFolder()
         {
             if (Directory.Exists(Settings.ResourceBuildOpsData))
                 Directory.CreateDirectory(Settings.ResourceBuildOpsData);
@@ -233,7 +246,7 @@ namespace Zephyr.BuildOps.SceneCompiler
         /// Collect Path for the Xml by collection user data
         /// </summary>
         /// <returns>xml path</returns>
-        private static string GetPathForXml()
+        public static string GetPathForXml()
         {
             const string fileExtension = "xml";
             const string saveFileMesage = "Select folder to save xml to";

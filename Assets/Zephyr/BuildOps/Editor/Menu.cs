@@ -1,5 +1,6 @@
 ﻿using Assets.Zephyr.BuildOps.SceneCompiler;
 using UnityEditor;
+using Zephyr.BuildOps.SceneCompiler;
 
 namespace Zephyr.BuildOps
 {
@@ -11,8 +12,12 @@ namespace Zephyr.BuildOps
         [MenuItem("Tools/Build Ops/Save")]
         private static void SaveCurrentScene()
         {
-            var sc = new SceneCompiler.SceneWriter();
-            sc.RunCurrentScene();
+            //Create necessary folders and get file names
+            var path = SceneWriter.GetPathForXml();
+            SceneWriter.WriteResourceDevOpsFolder();
+
+            var sc = new SceneWriter(path);
+            sc.Write();
         }
 
         /// <summary>
@@ -48,7 +53,7 @@ namespace Zephyr.BuildOps
         /// <param name="path"></param>
         private static void LoadScenePath(string path)
         {
-            var reader = new SceneReader();
+            var reader = new SceneReader(path);
             reader.LoadScene(path);
         }
     }

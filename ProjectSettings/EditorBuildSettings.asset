@@ -6,8 +6,6 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Initial_Game.unity
-  - enabled: 1
     path: Assets/Zephyr/BuildOps/Editor/Tests/Scenes/Base.unity
   - enabled: 1
     path: Assets/Zephyr/BuildOps/Editor/Tests/Scenes/SceneWithCube.unity

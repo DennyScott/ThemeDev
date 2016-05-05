@@ -11,17 +11,46 @@ namespace Assets.Zephyr.BuildOps.SceneCompiler
     /// </summary>
     public class SceneReader
     {
+        public SceneContainer CurrentScene { get; private set; }
+        public PlatformContainer CurrentPlatform { get; private set; }
+        public string XmlPath { get; private set; }
+
+        #region Constructor
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="xmlPath">Path for a given xml file.</param>
+        public SceneReader(string xmlPath)
+        {
+            XmlPath = xmlPath;
+        }
+
+        #endregion
+
+        #region Public Methods
         /// <summary>
         /// Public API to load a Scene from a given xml path. This will load the xml into a scene container,
         /// and then load the nested scenes out of the container.
         /// </summary>
+        public void LoadScene()
+        {
+            LoadBuildSettings(XmlPath);
+
+            CurrentScene = LoadSceneContainerFromXml(XmlPath);
+            LoadSceneContainer(CurrentScene);
+        }
+
+
+        /// <summary>
+        /// Public API to load a Scene from a given xml path. This will load the xml into a scene container,
+        /// and then load the nested scenes out of the container. 
+        /// </summary>
         /// <param name="xmlPath">Location of xml to load scene from</param>
         public void LoadScene(string xmlPath)
         {
-            LoadBuildSettings(xmlPath);
-
-            var container = LoadSceneContainerFromXml(xmlPath);
-            LoadSceneContainer(container);
+            XmlPath = xmlPath;
+            LoadScene();
         }
 
         /// <summary>
@@ -45,8 +74,8 @@ namespace Assets.Zephyr.BuildOps.SceneCompiler
         public void LoadBuildSettings(string path)
         {
             var buildSettingsFile = SceneWriter.AddBuildSettingsExtension(path);
-            var container = LoadPlatformContainerFromXml(buildSettingsFile);
-            var scenes = CollectBuildSceneSettings(container);
+            CurrentPlatform = LoadPlatformContainerFromXml(buildSettingsFile);
+            var scenes = CollectBuildSceneSettings(CurrentPlatform);
 
             EditorBuildSettings.scenes = scenes;
         }
@@ -58,7 +87,7 @@ namespace Assets.Zephyr.BuildOps.SceneCompiler
         /// <returns>Array of Scenes to add to build settings</returns>
         public EditorBuildSettingsScene[] CollectBuildSceneSettings(PlatformContainer container)
         {
-            EditorBuildSettingsScene[] scenes = new EditorBuildSettingsScene[container.Scenes.Count];
+            var scenes = new EditorBuildSettingsScene[container.Scenes.Count];
             for (var i = 0; i < container.Scenes.Count; i++)
             {
                 scenes[i] = new EditorBuildSettingsScene(container.Scenes[i].Scenes[0].Path, true);
@@ -86,6 +115,8 @@ namespace Assets.Zephyr.BuildOps.SceneCompiler
         {
             return Deserialize<PlatformContainer>(xmlPath);
         }
+
+        #endregion
 
         #region Private Methods
 

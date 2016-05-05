@@ -17,13 +17,14 @@ namespace Zephyr.BuildOps.Tests.SceneCompilerTest
         private static readonly string BaseScene = SceneCompilerPath + "Base.unity";
         private static readonly string SceneWithCube = SceneCompilerPath + "SceneWithCube.unity";
         private static readonly string SceneWithSphere = SceneCompilerPath + "SceneWithSphere.unity";
+        private const string Path = "Assets/Resources/BuildOpsData/mobile.xml";
         private const string Platform = "mobile";
         private SceneCompiler.SceneWriter _writer;
 
         [SetUp]
         public void Init()
         {
-            _writer = new SceneCompiler.SceneWriter();
+            _writer = new SceneCompiler.SceneWriter(Path);
             EditorSceneManager.OpenScene(BaseScene);
         }
 
@@ -203,11 +204,8 @@ namespace Zephyr.BuildOps.Tests.SceneCompilerTest
         [Category("ParsePlatformFromPath")]
         public void DoesParseNameFromPath()
         {
-            //Arrange
-            var path = "Assets/Resources/BuildOpsData/mobile.xml";
-
             //Act
-            var name = SceneCompiler.SceneWriter.ParsePlatformFromPath(path);
+            var name = SceneCompiler.SceneWriter.ParsePlatformFromPath(Path);
 
             //Assert
             Assert.AreEqual("mobile", name);

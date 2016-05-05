@@ -26,7 +26,7 @@ namespace Zephyr.BuildOps.Tests.SceneCompilerTest
         [SetUp]
         public void Init()
         {
-            _reader = new SceneReader();
+            _reader = new SceneReader(SceneContainerXml);
         }
 
         [Test]
