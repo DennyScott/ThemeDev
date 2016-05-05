@@ -66,7 +66,7 @@ namespace HutongGames.PlayMakerEditor
 
             foreach (var scene in EditorBuildSettings.scenes)
             {
-                Debug.Log("Open Scene: " + scene.path);
+                Debug.Log("Open NestedScene: " + scene.path);
 #if UNITY_PRE_5_3
                 EditorApplication.OpenScene(scene.path);
 #else

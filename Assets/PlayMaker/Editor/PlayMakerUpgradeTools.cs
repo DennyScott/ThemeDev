@@ -54,7 +54,7 @@ public class PlayMakerUpgradeTools
     {
         foreach (var scene in EditorBuildSettings.scenes)
         {
-            Debug.Log("Open Scene: " + scene.path);
+            Debug.Log("Open NestedScene: " + scene.path);
             EditorApplication.OpenScene(scene.path);
             FsmEditor.RebuildFsmList();
             SaveAllLoadedFSMs();

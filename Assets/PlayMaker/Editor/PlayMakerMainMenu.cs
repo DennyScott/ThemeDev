@@ -176,13 +176,13 @@ static class PlayMakerMainMenu
 		//FsmEditor.SelectFsm(playmakerFSM.Fsm);
 	}
 
-	[MenuItem(MenuRoot + "Components/Add PlayMakerGUI to Scene", true)]
+	[MenuItem(MenuRoot + "Components/Add PlayMakerGUI to NestedScene", true)]
 	public static bool ValidateAddPlayMakerGUI()
 	{
 		return (Object.FindObjectOfType(typeof(PlayMakerGUI)) as PlayMakerGUI) == null;
 	}
 
-	[MenuItem(MenuRoot + "Components/Add PlayMakerGUI to Scene", false, 20)]
+	[MenuItem(MenuRoot + "Components/Add PlayMakerGUI to NestedScene", false, 20)]
 	public static void AddPlayMakerGUI()
 	{
 		PlayMakerGUI.Instance.enabled = true;

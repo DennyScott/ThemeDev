@@ -3,22 +3,23 @@ using Zephyr.EventSystem.Core;
 
 namespace Zephyr.EventSystem.Editor.Test.Core
 {
-  [TestFixture]
-  [Category("Game Event")]
-  public class GameEventTest
-  {
-    private GameEvent _gameEvent;
-
-    [SetUp]
-    public void Init()
+    [TestFixture]
+    [Category("Game Event")]
+    public class GameEventTest
     {
-      _gameEvent = new GameEvent();
-    }
+        [SetUp]
+        public void Init()
+        {
+            _gameEvent = new GameEvent();
+        }
 
-    [Test]
-    public void IsNameEqualsTheTypeName()
-    {
-      Assert.AreEqual(_gameEvent.Name, _gameEvent.GetType().Name);
+        private GameEvent _gameEvent;
+
+
+        [Test]
+        public void IsNameEqualsTheTypeName()
+        {
+            Assert.AreEqual(_gameEvent.Name, _gameEvent.GetType().Name);
+        }
     }
-  }
 }
