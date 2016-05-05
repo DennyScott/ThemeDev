@@ -15,8 +15,8 @@ namespace Zephyr.BuildOps.Tests.SceneCompilerTest
         private static readonly string TestFolder = Settings.BuildOps + "Editor/Tests/";
         private static readonly string SceneCompilerPath = TestFolder + "Scenes/";
         private static readonly string XmlTestFile = SceneCompilerPath + "testFile.xml";
-        private static readonly string sceneContainerXML = TestFolder + "Fixtures/Resources/testData.xml";
-        private static readonly string platformContainerXML = TestFolder + "Fixtures/Resources/testData_build.xml";
+        private static readonly string SceneContainerXml = TestFolder + "Fixtures/Resources/testData.xml";
+        private static readonly string PlatformContainerXml = TestFolder + "Fixtures/Resources/testData_build.xml";
         private static readonly string BaseScene = SceneCompilerPath + "Base.unity";
         private static readonly string SceneWithCube = SceneCompilerPath + "SceneWithCube.unity";
         private static readonly string SceneWithSphere = SceneCompilerPath + "SceneWithSphere.unity";
@@ -34,7 +34,7 @@ namespace Zephyr.BuildOps.Tests.SceneCompilerTest
         public void DoesLoadContainerReadFromXml()
         {
             //Act
-            var container = _reader.LoadSceneContainerFromXml(sceneContainerXML);
+            var container = _reader.LoadSceneContainerFromXml(SceneContainerXml);
 
             //Assert
             Assert.AreEqual(2, container.Scenes.Count);
@@ -45,7 +45,7 @@ namespace Zephyr.BuildOps.Tests.SceneCompilerTest
         public void DoesLoadContainerNotReturnNull()
         {
             //Act
-            var container = _reader.LoadSceneContainerFromXml(sceneContainerXML);
+            var container = _reader.LoadSceneContainerFromXml(SceneContainerXml);
 
             //Assert
             Assert.IsNotNull(container);
@@ -56,7 +56,7 @@ namespace Zephyr.BuildOps.Tests.SceneCompilerTest
         public void DoesLoadSceneContainerCreateCorrectNumberOfNestedScenes()
         {
             //Arrange
-            var container = _reader.LoadSceneContainerFromXml(sceneContainerXML);
+            var container = _reader.LoadSceneContainerFromXml(SceneContainerXml);
 
             //Act
             _reader.LoadSceneContainer(container);
@@ -70,7 +70,7 @@ namespace Zephyr.BuildOps.Tests.SceneCompilerTest
         public void DoesLoadSceneContainerCreateBaseScene()
         {
             //Arrange
-            var container = _reader.LoadSceneContainerFromXml(sceneContainerXML);
+            var container = _reader.LoadSceneContainerFromXml(SceneContainerXml);
 
             //Act
             _reader.LoadSceneContainer(container);
@@ -85,7 +85,7 @@ namespace Zephyr.BuildOps.Tests.SceneCompilerTest
         public void DoesLoadSceneContainerCreateNestedScene()
         {
             //Arrange
-            var container = _reader.LoadSceneContainerFromXml(sceneContainerXML);
+            var container = _reader.LoadSceneContainerFromXml(SceneContainerXml);
 
             //Act
             _reader.LoadSceneContainer(container);
@@ -100,7 +100,7 @@ namespace Zephyr.BuildOps.Tests.SceneCompilerTest
         public void DoesLoadPlatformContainerCreateScenes()
         {
             //Act
-            var container = _reader.LoadPlatformContainerFromXml(platformContainerXML);
+            var container = _reader.LoadPlatformContainerFromXml(PlatformContainerXml);
 
             //Assert
             Assert.AreEqual(3, container.Scenes.Count);
@@ -112,7 +112,7 @@ namespace Zephyr.BuildOps.Tests.SceneCompilerTest
         public void DoesCollectBuildSceneSettingsCreateCorrectAmountOfScenes()
         {
             //Arrage
-            var container = _reader.LoadPlatformContainerFromXml(platformContainerXML);
+            var container = _reader.LoadPlatformContainerFromXml(PlatformContainerXml);
 
             //Act
             var scenes = _reader.CollectBuildSceneSettings(container);
@@ -126,7 +126,7 @@ namespace Zephyr.BuildOps.Tests.SceneCompilerTest
         public void DoesCollectSettingsHaveCorrectPaths()
         {
             //Arrage
-            var container = _reader.LoadPlatformContainerFromXml(platformContainerXML);
+            var container = _reader.LoadPlatformContainerFromXml(PlatformContainerXml);
 
             //Act
             var scenes = _reader.CollectBuildSceneSettings(container);
@@ -141,7 +141,7 @@ namespace Zephyr.BuildOps.Tests.SceneCompilerTest
         public void DoesLoadBuildSettingsUpdateBuildSettingScenes()
         {
             //Act
-            _reader.LoadBuildSettings(sceneContainerXML);
+            _reader.LoadBuildSettings(SceneContainerXml);
 
             //Assert
             Assert.AreEqual(BaseScene, EditorBuildSettings.scenes[0].path);
@@ -152,7 +152,7 @@ namespace Zephyr.BuildOps.Tests.SceneCompilerTest
         public void DoesLoadSceneLoadCorrectNumberOfScenes()
         {
             //Act
-            _reader.LoadScene(sceneContainerXML);
+            _reader.LoadScene(SceneContainerXml);
 
             //Assert
             Assert.AreEqual(2, EditorSceneManager.sceneCount);
